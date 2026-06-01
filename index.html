@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluación Interactiva: Formularios Web</title>
+    <style>
+        /* Variables CSS para el sistema de temas */
+        :root {
+            --bg-color: #f4f7f6;
+            --container-bg: #ffffff;
+            --text-color: #333333;
+            --text-muted: #666666;
+            --primary-color: #0056b3;
+            --hover-color: #004494;
+            --border-color: #dddddd;
+            --success-color: #28a745;
+        }
+
+        /* Variables para el Dark Mode */
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --container-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --text-muted: #aaaaaa;
+            --primary-color: #4da3ff;
+            --hover-color: #2b8cff;
+            --border-color: #333333;
+            --success-color: #4cd964;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            background-color: var(--container-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
+
+        h1 { margin: 0; font-size: 1.5rem; }
+
+        .header-stats {
+            display: flex;
+            gap: 1rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.2s;
+            width: 100%;
+            margin-top: 0.5rem;
+            font-weight: 600;
+        }
+
+        button:hover { background-color: var(--hover-color); }
+
+        .btn-theme {
+            width: auto;
+            padding: 0.5rem 1rem;
+            margin-top: 0;
+        }
+
+        #question-container { margin-bottom: 2rem; }
+        .question-text { font-size: 1.2rem; font-weight: 600; margin-bottom: 1.5rem; }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .option-btn {
+            background-color: transparent;
+            color: var(--text-color);
+            border: 2px solid var(--primary-color);
+            text-align: left;
+        }
+
+        .option-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .hidden { display: none !important; }
+
+        /* Estilos para la tabla de récords */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        th, td {
+            text-align: left;
+            padding: 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        th { background-color: var(--border-color); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Quiz: Formularios</h1>
+            <div class="header-stats">
+                <span id="timer-display" class="hidden">⏱️ 0s</span>
+                <button id="theme-toggle" class="btn-theme">🌙 Dark</button>
+            </div>
+        </header>
+
+        <div id="start-screen">
+            <p>Pon a prueba tus conocimientos sobre Formularios Web Semánticos. El tiempo empezará a correr en cuanto presiones el botón.</p>
+            <button id="start-btn">Comenzar Evaluación</button>
+            
+            <h3 style="margin-top: 2rem;">Récords Locales</h3>
+            <table id="records-table">
+                <thead>
+                    <tr><th>Fecha</th><th>Puntaje</th><th>Tiempo</th></tr>
+                </thead>
+                <tbody id="records-body">
+                    </tbody>
+            </table>
+        </div>
+
+        <div id="quiz-screen" class="hidden">
+            <div id="question-container">
+                <div id="question-counter" style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 0.5rem;"></div>
+                <div id="question-text" class="question-text">Pregunta...</div>
+                <div id="options-container" class="options">
+                    </div>
+            </div>
+        </div>
+
+        <div id="result-screen" class="hidden">
+            <h2>¡Evaluación Completada!</h2>
+            <p style="font-size: 1.2rem;">Tu Puntaje: <span id="final-score" style="font-weight: bold; color: var(--success-color);"></span> / 10</p>
+            <p>Tiempo total: <span id="final-time" style="font-weight: bold;"></span> segundos.</p>
+            <button id="restart-btn" style="margin-top: 1rem;">Volver al Inicio</button>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. Base de Datos de Preguntas ---
+        const quizData = [
+            {
+                question: "¿Cuál es el propósito principal de las etiquetas <fieldset> y <legend>?",
+                options: [
+                    "Dar diseño estético sin CSS.",
+                    "Agrupar lógicamente campos para mejorar la accesibilidad.",
+                    "Crear paginación en el formulario."
+                ],
+                correct: 1
+            },
+            {
+                question: "El atributo type='email' requiere JavaScript para verificar el símbolo '@'.",
+                options: ["Verdadero", "Falso"],
+                correct: 1
+            },
+            {
+                question: "¿Qué ventaja ofrece usar <input type='number'> en un teléfono móvil?",
+                options: [
+                    "Despliega automáticamente el teclado numérico.",
+                    "Aumenta el tamaño de la fuente.",
+                    "Impide que la pantalla se apague."
+                ],
+                correct: 0
+            },
+            {
+                question: "La etiqueta <datalist> obliga al usuario a elegir solo las opciones predefinidas.",
+                options: ["Verdadero", "Falso"],
+                correct: 1
+            },
+            {
+                question: "¿Qué atributo sugiere información guardada previamente para llenar rápido el formulario?",
+                options: ["autofill", "suggest", "autocomplete"],
+                correct: 2
+            },
+            {
+                question: "Para ocultar contraseñas ingresadas, se utiliza el atributo type='secret'.",
+                options: ["Verdadero", "Falso"],
+                correct: 1 // Es falso, se usa 'password'
+            },
+            {
+                question: "La etiqueta <legend> debe ser el primer hijo directo del <fieldset>.",
+                options: ["Verdadero", "Falso"],
+                correct: 0
+            },
+            {
+                question: "¿Cómo se vincula correctamente un <input> con un <datalist>?",
+                options: [
+                    "Anidando el input dentro del datalist.",
+                    "El atributo 'list' del input debe coincidir con el 'id' del datalist.",
+                    "Usando el atributo 'name' en ambos."
+                ],
+                correct: 1
+            },
+            {
+                question: "Si el input tiene min='18' y se ingresa 15, ¿qué hace el navegador al enviar?",
+                options: [
+                    "Envía y marca en rojo.",
+                    "Detiene el envío y muestra una advertencia nativa.",
+                    "El servidor rechaza los datos."
+                ],
+                correct: 1
+            },
+            {
+                question: "La validación HTML5 hace innecesaria la validación en el servidor (Node.js).",
+                options: ["Verdadero", "Falso"],
+                correct: 1
+            }
+        ];
+
+        // --- 2. Variables de Estado ---
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let startTime;
+        let timerInterval;
+        let elapsedSeconds = 0;
+
+        // --- 3. Referencias al DOM ---
+        const startScreen = document.getElementById('start-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultScreen = document.getElementById('result-screen');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const questionCounter = document.getElementById('question-counter');
+        const timerDisplay = document.getElementById('timer-display');
+        const themeToggle = document.getElementById('theme-toggle');
+        const recordsBody = document.getElementById('records-body');
+
+        // --- 4. Funcionalidad Dark Mode ---
+        function initTheme() {
+            // Revisa si hay preferencia guardada
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                themeToggle.textContent = '☀️ Light';
+            }
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.body.getAttribute('data-theme') === 'dark';
+            if (isDark) {
+                document.body.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+                themeToggle.textContent = '🌙 Dark';
+            } else {
+                document.body.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                themeToggle.textContent = '☀️ Light';
+            }
+        });
+
+        // --- 5. Lógica del Quiz y Timer ---
+        function updateTimer() {
+            elapsedSeconds++;
+            timerDisplay.textContent = `⏱️ ${elapsedSeconds}s`;
+        }
+
+        document.getElementById('start-btn').addEventListener('click', () => {
+            startScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            timerDisplay.classList.remove('hidden');
+            
+            currentQuestionIndex = 0;
+            score = 0;
+            elapsedSeconds = 0;
+            timerDisplay.textContent = `⏱️ 0s`;
+            
+            startTime = Date.now();
+            timerInterval = setInterval(updateTimer, 1000);
+            
+            loadQuestion();
+        });
+
+        function loadQuestion() {
+            const currentData = quizData[currentQuestionIndex];
+            questionCounter.textContent = `Pregunta ${currentQuestionIndex + 1} de ${quizData.length}`;
+            questionText.textContent = currentData.question;
+            optionsContainer.innerHTML = '';
+
+            currentData.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.textContent = option;
+                button.classList.add('option-btn');
+                button.addEventListener('click', () => selectAnswer(index));
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        function selectAnswer(selectedIndex) {
+            const currentData = quizData[currentQuestionIndex];
+            if (selectedIndex === currentData.correct) {
+                score++;
+            }
+
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData.length) {
+                loadQuestion();
+            } else {
+                endQuiz();
+            }
+        }
+
+        function endQuiz() {
+            clearInterval(timerInterval);
+            quizScreen.classList.add('hidden');
+            timerDisplay.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+
+            document.getElementById('final-score').textContent = score;
+            document.getElementById('final-time').textContent = elapsedSeconds;
+
+            saveRecord(score, elapsedSeconds);
+            renderRecords();
+        }
+
+        document.getElementById('restart-btn').addEventListener('click', () => {
+            resultScreen.classList.add('hidden');
+            startScreen.classList.remove('hidden');
+        });
+
+        // --- 6. Persistencia de Datos con LocalStorage ---
+        function saveRecord(finalScore, finalTime) {
+            const date = new Date().toLocaleDateString('es-AR', { hour: '2-digit', minute: '2-digit' });
+            const newRecord = { date, score: finalScore, time: finalTime };
+            
+            // Obtener array previo o crear uno nuevo
+            const savedRecords = JSON.parse(localStorage.getItem('quizRecords')) || [];
+            savedRecords.push(newRecord);
+            
+            // Guardar stringificado en LocalStorage
+            localStorage.setItem('quizRecords', JSON.stringify(savedRecords));
+        }
+
+        function renderRecords() {
+            const savedRecords = JSON.parse(localStorage.getItem('quizRecords')) || [];
+            recordsBody.innerHTML = '';
+            
+            if(savedRecords.length === 0) {
+                recordsBody.innerHTML = '<tr><td colspan="3" style="text-align:center;">No hay récords aún</td></tr>';
+                return;
+            }
+
+            // Ordenar por puntaje (descendente) y luego por tiempo (ascendente)
+            savedRecords.sort((a, b) => {
+                if (b.score !== a.score) return b.score - a.score;
+                return a.time - b.time;
+            });
+
+            // Mostrar los mejores 5
+            savedRecords.slice(0, 5).forEach(record => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${record.date}</td><td>${record.score}/10</td><td>${record.time}s</td>`;
+                recordsBody.appendChild(tr);
+            });
+        }
+
+        // Inicialización al cargar la página
+        initTheme();
+        renderRecords();
+    </script>
+</body>
+</html>
