@@ -1,0 +1,262 @@
+/* Variables CSS para el sistema de temas */
+:root {
+    --bg-color: #f4f7f6;
+    --container-bg: #ffffff;
+    --text-color: #333333;
+    --text-muted: #666666;
+    --primary-color: #0056b3;
+    --hover-color: #004494;
+    --border-color: #dddddd;
+    --success-color: #28a745;
+}
+
+/* Variables para el Dark Mode */
+[data-theme="dark"] {
+    --bg-color: #121212;
+    --container-bg: #1e1e1e;
+    --text-color: #e0e0e0;
+    --text-muted: #aaaaaa;
+    --primary-color: #4da3ff;
+    --hover-color: #2b8cff;
+    --border-color: #333333;
+    --success-color: #4cd964;
+}
+
+body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--container-bg);
+    /* Unificamos el fondo para pantalla completa */
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    /* Evita scroll horizontal accidental */
+    transition:
+        background-color 0.3s,
+        color 0.3s;
+}
+
+/* Contenedor al 100% del Viewport */
+.container {
+    width: 100vw;
+    min-height: 100vh;
+    padding: 3rem 5vw;
+    /* Padding dinámico basado en el ancho de la pantalla */
+    box-sizing: border-box;
+    /* Crucial: incluye el padding dentro del 100vw */
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3rem;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 1.5rem;
+}
+
+h1 {
+    margin: 0;
+    font-size: 2.5rem;
+}
+
+/* Tipografía escalada */
+
+.header-stats {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    align-items: center;
+}
+
+button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 1rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
+    font-weight: 600;
+}
+
+button:hover {
+    background-color: var(--hover-color);
+    transform: translateY(-2px);
+}
+
+.btn-theme {
+    width: auto;
+    padding: 0.6rem 1.2rem;
+    margin-top: 0;
+    font-size: 1rem;
+}
+
+#question-container {
+    flex-grow: 1;
+    /* Permite que la pregunta ocupe el espacio disponible central */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.question-text {
+    font-size: 2.2rem;
+    font-weight: 600;
+    margin-bottom: 3rem;
+    line-height: 1.4;
+    max-width: 1200px;
+    /* Previene que el texto sea inabarcable visualmente en monitores ultra-wide */
+}
+
+/* CSS Grid para aprovechar la pantalla en las opciones */
+.options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 1400px;
+}
+
+@media (max-width: 768px) {
+    .options {
+        grid-template-columns: 1fr;
+        /* 1 columna en celulares */
+    }
+
+    .question-text {
+        font-size: 1.5rem;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+    }
+}
+
+.option-btn {
+    background-color: transparent;
+    color: var(--text-color);
+    border: 3px solid var(--primary-color);
+    text-align: left;
+    padding: 2rem;
+    font-size: 1.3rem;
+    border-radius: 12px;
+}
+
+.option-btn:hover {
+    background-color: var(--primary-color);
+    color: white;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Estilos de la tabla adaptados */
+.records-wrapper {
+    margin-top: 3rem;
+    width: 100%;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1.1rem;
+}
+
+th,
+td {
+    text-align: left;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+th {
+    background-color: var(--border-color);
+}
+
+#start-btn,
+#restart-btn {
+    max-width: 400px;
+    font-size: 1.3rem;
+    padding: 1.2rem;
+}
+
+/* --- Efectos de feedback --- */
+@keyframes shake {
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
+        transform: translateX(-8px);
+    }
+    20%,
+    40%,
+    60%,
+    80% {
+        transform: translateX(8px);
+    }
+}
+
+.option-btn.correct {
+    background-color: var(--success-color) !important;
+    color: white !important;
+    border-color: var(--success-color) !important;
+}
+
+.option-btn.incorrect {
+    background-color: #dc3545 !important;
+    color: white !important;
+    border-color: #dc3545 !important;
+    animation: shake 0.5s ease-in-out;
+}
+
+.option-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+#feedback-container {
+    margin-top: 2rem;
+    padding: 1.2rem 1.5rem;
+    border-radius: 10px;
+    font-size: 1.15rem;
+    line-height: 1.5;
+    border-left: 5px solid;
+    max-width: 1400px;
+}
+
+#feedback-container.feedback-correct {
+    background-color: rgba(40, 167, 69, 0.1);
+    border-left-color: var(--success-color);
+    color: var(--text-color);
+}
+
+#feedback-container.feedback-incorrect {
+    background-color: rgba(220, 53, 69, 0.1);
+    border-left-color: #dc3545;
+    color: var(--text-color);
+}
+
+#feedback-text {
+    margin: 0;
+}
+
+#next-btn {
+    margin-top: 1.2rem;
+    padding: 0.8rem 2rem;
+    font-size: 1.1rem;
+    float: right;
+}

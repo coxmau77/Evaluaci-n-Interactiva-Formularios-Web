@@ -1,173 +1,15 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Evaluación Interactiva: Formularios Web</title>
-    <style>
-        /* Variables CSS para el sistema de temas */
-        :root {
-            --bg-color: #f4f7f6;
-            --container-bg: #ffffff;
-            --text-color: #333333;
-            --text-muted: #666666;
-            --primary-color: #0056b3;
-            --hover-color: #004494;
-            --border-color: #dddddd;
-            --success-color: #28a745;
-        }
-
-        /* Variables para el Dark Mode */
-        [data-theme="dark"] {
-            --bg-color: #121212;
-            --container-bg: #1e1e1e;
-            --text-color: #e0e0e0;
-            --text-muted: #aaaaaa;
-            --primary-color: #4da3ff;
-            --hover-color: #2b8cff;
-            --border-color: #333333;
-            --success-color: #4cd964;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--container-bg); /* Unificamos el fondo para pantalla completa */
-            color: var(--text-color);
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            overflow-x: hidden; /* Evita scroll horizontal accidental */
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        /* Contenedor al 100% del Viewport */
-        .container {
-            width: 100vw;
-            min-height: 100vh;
-            padding: 3rem 5vw; /* Padding dinámico basado en el ancho de la pantalla */
-            box-sizing: border-box; /* Crucial: incluye el padding dentro del 100vw */
-            display: flex;
-            flex-direction: column;
-        }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 3rem;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 1.5rem;
-        }
-
-        h1 { margin: 0; font-size: 2.5rem; } /* Tipografía escalada */
-
-        .header-stats {
-            display: flex;
-            gap: 1.5rem;
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: var(--primary-color);
-            align-items: center;
-        }
-
-        button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 1rem 1.5rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 1.2rem;
-            transition: all 0.2s ease;
-            font-weight: 600;
-        }
-
-        button:hover { 
-            background-color: var(--hover-color); 
-            transform: translateY(-2px);
-        }
-
-        .btn-theme {
-            width: auto;
-            padding: 0.6rem 1.2rem;
-            margin-top: 0;
-            font-size: 1rem;
-        }
-
-        #question-container { 
-            flex-grow: 1; /* Permite que la pregunta ocupe el espacio disponible central */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        
-        .question-text { 
-            font-size: 2.2rem; 
-            font-weight: 600; 
-            margin-bottom: 3rem; 
-            line-height: 1.4;
-            max-width: 1200px; /* Previene que el texto sea inabarcable visualmente en monitores ultra-wide */
-        }
-        
-        /* CSS Grid para aprovechar la pantalla en las opciones */
-        .options {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 1.5rem;
-            width: 100%;
-            max-width: 1400px;
-        }
-
-        @media (max-width: 768px) {
-            .options {
-                grid-template-columns: 1fr; /* 1 columna en celulares */
-            }
-            .question-text { font-size: 1.5rem; }
-            h1 { font-size: 1.8rem; }
-        }
-
-        .option-btn {
-            background-color: transparent;
-            color: var(--text-color);
-            border: 3px solid var(--primary-color);
-            text-align: left;
-            padding: 2rem;
-            font-size: 1.3rem;
-            border-radius: 12px;
-        }
-
-        .option-btn:hover {
-            background-color: var(--primary-color);
-            color: white;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
-        }
-
-        .hidden { display: none !important; }
-
-        /* Estilos de la tabla adaptados */
-        .records-wrapper {
-            margin-top: 3rem;
-            max-width: 800px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 1.1rem;
-        }
-        th, td {
-            text-align: left;
-            padding: 1rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-        th { background-color: var(--border-color); }
-        
-        #start-btn, #restart-btn {
-            max-width: 400px;
-            font-size: 1.3rem;
-            padding: 1.2rem;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1/font/bootstrap-icons.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230056b3'/%3E%3Ctext x='50' y='68' font-size='60' text-anchor='middle' fill='white'%3E✓%3C/text%3E%3C/svg%3E">
 </head>
+
 <body>
 
     <div class="container">
@@ -180,255 +22,57 @@
         </header>
 
         <div id="start-screen">
-            <p style="font-size: 1.3rem; max-width: 800px; margin-bottom: 2rem; line-height: 1.5;">Pon a prueba tus conocimientos sobre Formularios Web Semánticos. El tiempo empezará a correr en cuanto presiones el botón.</p>
+            <p style="font-size: 1.3rem; max-width: 800px; margin-bottom: 2rem; line-height: 1.5;">Pon a prueba tus
+                conocimientos sobre Formularios Web Semánticos. El tiempo empezará a correr en cuanto presiones el
+                botón.</p>
             <button id="start-btn">Comenzar Evaluación</button>
-            
+
             <div class="records-wrapper">
                 <h3>Récords Locales</h3>
                 <table id="records-table">
                     <thead>
-                        <tr><th>Fecha</th><th>Puntaje</th><th>Tiempo</th></tr>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Puntaje</th>
+                            <th>Tiempo</th>
+                        </tr>
                     </thead>
                     <tbody id="records-body">
-                        </tbody>
+                    </tbody>
                 </table>
             </div>
         </div>
 
         <div id="quiz-screen" class="hidden">
             <div id="question-container">
-                <div id="question-counter" style="color: var(--text-muted); font-size: 1.2rem; font-weight: bold; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 2px;"></div>
+                <div id="question-counter"
+                    style="color: var(--text-muted); font-size: 1.2rem; font-weight: bold; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 2px;">
+                </div>
                 <div id="question-text" class="question-text">Pregunta...</div>
                 <div id="options-container" class="options">
-                    </div>
+                </div>
+                <div id="feedback-container" class="hidden">
+                    <p id="feedback-text"></p>
+                    <button id="next-btn" class="hidden">Siguiente Pregunta →</button>
+                </div>
             </div>
         </div>
 
         <div id="result-screen" class="hidden">
             <h2 style="font-size: 3rem; margin-top: 0;">¡Evaluación Completada!</h2>
-            <p style="font-size: 1.8rem; margin: 2rem 0;">Tu Puntaje: <span id="final-score" style="font-weight: bold; color: var(--success-color); font-size: 2.5rem;"></span> / 10</p>
-            <p style="font-size: 1.5rem;">Tiempo total: <span id="final-time" style="font-weight: bold; font-size: 2rem;"></span> segundos.</p>
+            <p style="font-size: 1.8rem; margin: 2rem 0;">Tu Puntaje: <span id="final-score"
+                    style="font-weight: bold; color: var(--success-color); font-size: 2.5rem;"></span> / 10</p>
+            <p style="font-size: 1.5rem;">Tiempo total: <span id="final-time"
+                    style="font-weight: bold; font-size: 2rem;"></span> segundos.</p>
             <button id="restart-btn" style="margin-top: 3rem;">Volver al Inicio</button>
         </div>
     </div>
 
-    <script>
-        // --- 1. Base de Datos de Preguntas ---
-        const quizData = [
-            {
-                question: "¿Cuál es el propósito principal de las etiquetas <fieldset> y <legend>?",
-                options: [
-                    "Dar diseño estético sin CSS.",
-                    "Agrupar lógicamente campos para mejorar la accesibilidad.",
-                    "Crear paginación en el formulario."
-                ],
-                correct: 1
-            },
-            {
-                question: "El atributo type='email' requiere JavaScript para verificar el símbolo '@'.",
-                options: ["Verdadero", "Falso"],
-                correct: 1
-            },
-            {
-                question: "¿Qué ventaja ofrece usar <input type='number'> en un teléfono móvil?",
-                options: [
-                    "Despliega automáticamente el teclado numérico.",
-                    "Aumenta el tamaño de la fuente.",
-                    "Impide que la pantalla se apague."
-                ],
-                correct: 0
-            },
-            {
-                question: "La etiqueta <datalist> obliga al usuario a elegir solo las opciones predefinidas.",
-                options: ["Verdadero", "Falso"],
-                correct: 1
-            },
-            {
-                question: "¿Qué atributo sugiere información guardada previamente para llenar rápido el formulario?",
-                options: ["autofill", "suggest", "autocomplete"],
-                correct: 2
-            },
-            {
-                question: "Para ocultar contraseñas ingresadas, se utiliza el atributo type='secret'.",
-                options: ["Verdadero", "Falso"],
-                correct: 1
-            },
-            {
-                question: "La etiqueta <legend> debe ser el primer hijo directo del <fieldset>.",
-                options: ["Verdadero", "Falso"],
-                correct: 0
-            },
-            {
-                question: "¿Cómo se vincula correctamente un <input> con un <datalist>?",
-                options: [
-                    "Anidando el input dentro del datalist.",
-                    "El atributo 'list' del input debe coincidir con el 'id' del datalist.",
-                    "Usando el atributo 'name' en ambos."
-                ],
-                correct: 1
-            },
-            {
-                question: "Si el input tiene min='18' y se ingresa 15, ¿qué hace el navegador al enviar?",
-                options: [
-                    "Envía y marca en rojo.",
-                    "Detiene el envío y muestra una advertencia nativa.",
-                    "El servidor rechaza los datos."
-                ],
-                correct: 1
-            },
-            {
-                question: "La validación HTML5 hace innecesaria la validación en el servidor (Node.js).",
-                options: ["Verdadero", "Falso"],
-                correct: 1
-            }
-        ];
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
+    <script src="script.js"></script>
 
-        // --- 2. Variables de Estado ---
-        let currentQuestionIndex = 0;
-        let score = 0;
-        let startTime;
-        let timerInterval;
-        let elapsedSeconds = 0;
-
-        // --- 3. Referencias al DOM ---
-        const startScreen = document.getElementById('start-screen');
-        const quizScreen = document.getElementById('quiz-screen');
-        const resultScreen = document.getElementById('result-screen');
-        const questionText = document.getElementById('question-text');
-        const optionsContainer = document.getElementById('options-container');
-        const questionCounter = document.getElementById('question-counter');
-        const timerDisplay = document.getElementById('timer-display');
-        const themeToggle = document.getElementById('theme-toggle');
-        const recordsBody = document.getElementById('records-body');
-
-        // --- 4. Funcionalidad Dark Mode ---
-        function initTheme() {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark') {
-                document.body.setAttribute('data-theme', 'dark');
-                themeToggle.textContent = '☀️ Light';
-            }
-        }
-
-        themeToggle.addEventListener('click', () => {
-            const isDark = document.body.getAttribute('data-theme') === 'dark';
-            if (isDark) {
-                document.body.removeAttribute('data-theme');
-                localStorage.setItem('theme', 'light');
-                themeToggle.textContent = '🌙 Dark';
-            } else {
-                document.body.setAttribute('data-theme', 'dark');
-                localStorage.setItem('theme', 'dark');
-                themeToggle.textContent = '☀️ Light';
-            }
-        });
-
-        // --- 5. Lógica del Quiz y Timer ---
-        function updateTimer() {
-            elapsedSeconds++;
-            timerDisplay.textContent = `⏱️ ${elapsedSeconds}s`;
-        }
-
-        document.getElementById('start-btn').addEventListener('click', () => {
-            startScreen.classList.add('hidden');
-            quizScreen.classList.remove('hidden');
-            timerDisplay.classList.remove('hidden');
-            
-            currentQuestionIndex = 0;
-            score = 0;
-            elapsedSeconds = 0;
-            timerDisplay.textContent = `⏱️ 0s`;
-            
-            startTime = Date.now();
-            timerInterval = setInterval(updateTimer, 1000);
-            
-            loadQuestion();
-        });
-
-        function loadQuestion() {
-            const currentData = quizData[currentQuestionIndex];
-            questionCounter.textContent = `Pregunta ${currentQuestionIndex + 1} de ${quizData.length}`;
-            questionText.textContent = currentData.question;
-            optionsContainer.innerHTML = '';
-
-            currentData.options.forEach((option, index) => {
-                const button = document.createElement('button');
-                button.textContent = option;
-                button.classList.add('option-btn');
-                button.addEventListener('click', () => selectAnswer(index));
-                optionsContainer.appendChild(button);
-            });
-        }
-
-        function selectAnswer(selectedIndex) {
-            const currentData = quizData[currentQuestionIndex];
-            if (selectedIndex === currentData.correct) {
-                score++;
-            }
-
-            currentQuestionIndex++;
-            if (currentQuestionIndex < quizData.length) {
-                loadQuestion();
-            } else {
-                endQuiz();
-            }
-        }
-
-        function endQuiz() {
-            clearInterval(timerInterval);
-            quizScreen.classList.add('hidden');
-            timerDisplay.classList.add('hidden');
-            resultScreen.classList.remove('hidden');
-
-            document.getElementById('final-score').textContent = score;
-            document.getElementById('final-time').textContent = elapsedSeconds;
-
-            saveRecord(score, elapsedSeconds);
-            renderRecords();
-        }
-
-        // --- 6. Persistencia de Datos con LocalStorage ---
-        function saveRecord(finalScore, finalTime) {
-            const date = new Date().toLocaleDateString('es-AR', { hour: '2-digit', minute: '2-digit' });
-            const newRecord = { date, score: finalScore, time: finalTime };
-            
-            const savedRecords = JSON.parse(localStorage.getItem('quizRecords')) || [];
-            savedRecords.push(newRecord);
-            
-            localStorage.setItem('quizRecords', JSON.stringify(savedRecords));
-        }
-
-        function renderRecords() {
-            const savedRecords = JSON.parse(localStorage.getItem('quizRecords')) || [];
-            recordsBody.innerHTML = '';
-            
-            if(savedRecords.length === 0) {
-                recordsBody.innerHTML = '<tr><td colspan="3" style="text-align:center;">No hay récords aún</td></tr>';
-                return;
-            }
-
-            savedRecords.sort((a, b) => {
-                if (b.score !== a.score) return b.score - a.score;
-                return a.time - b.time;
-            });
-
-            savedRecords.slice(0, 5).forEach(record => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `<td>${record.date}</td><td>${record.score}/10</td><td>${record.time}s</td>`;
-                recordsBody.appendChild(tr);
-            });
-        }
-
-        document.getElementById('restart-btn').addEventListener('click', () => {
-            resultScreen.classList.add('hidden');
-            startScreen.classList.remove('hidden');
-        });
-
-        // Inicialización
-        initTheme();
-        renderRecords();
-    </script>
 </body>
+
 </html>
 
 ```
